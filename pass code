@@ -1,0 +1,47 @@
+import random
+
+class AIEnchantedLock:
+    def __init__(self):
+        self.passcode = None
+        self.locked = True
+
+    def set_passcode(self, passcode):
+        self.passcode = passcode
+
+    def lock(self):
+        self.locked = True
+        print("Locking the system...")
+
+    def unlock(self, user_passcode):
+        if user_passcode == self.passcode:
+            self.locked = False
+            print("System unlocked!")
+        else:
+            print("Incorrect passcode. System remains locked.")
+
+    def ai_interaction(self):
+        if self.locked:
+            print("AI: The system is currently locked. Please provide the passcode to unlock.")
+            user_input = input("User: ")
+            self.unlock(user_input)
+        else:
+            print("AI: The system is already unlocked. No action needed.")
+
+if __name__ == "__main__":
+    lock_system = AIEnchantedLock()
+    # Set a passcode
+    passcode = str(random.randint(1000, 9999))  # Generate a random 4-digit passcode
+    lock_system.set_passcode(passcode)
+
+    # Lock the system initially
+    lock_system.lock()
+
+    # Demonstrate AI interaction
+    lock_system.ai_interaction()
+
+    # Demonstrate unlocking with correct passcode
+    print("Unlocking with correct passcode...")
+    lock_system.unlock(passcode)
+
+    # Demonstrate AI interaction again
+    lock_system.ai_interaction()
