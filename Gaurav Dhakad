@@ -1,0 +1,47 @@
+import socket
+import threading
+
+# Server configuration
+HOST = '127.0.0.1'
+PORT = 5050
+
+# Create a socket
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind((HOST, PORT))
+
+# Function to handle client connections
+def handle_client(conn, addr):
+    print(f"[NEW CONNECTION] {addr} connected.")
+
+    connected = True
+    while connected:
+        # Receive message from client
+        msg = conn.recv(1024).decode()
+        if msg == 'quit':
+            connected = False
+        print(f"[{addr}] {msg}")
+
+        # Broadcast message to all clients
+        for client in clients:
+            if client != conn:
+                client.send(msg.encode())
+
+    # Close connection
+    conn.close()
+
+# List to store client connections
+clients = []
+
+# Start listening for connections
+server.listen()
+print(f"[LISTENING] Server is listening on {HOST}:{PORT}")
+
+while True:
+    # Accept new connection
+    conn, addr = server.accept()
+    clients.append(conn)
+
+    # Start a new thread to handle the client
+    thread = threading.Thread(target=handle_client, args=(conn, addr))
+    thread.start()
+    print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
